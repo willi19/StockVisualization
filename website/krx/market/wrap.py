@@ -1,11 +1,12 @@
 from website.comm import dataframe_empty_handler
 from website.krx.market.ticker import get_stock_ticker_isin
-from website.krx.market.core import (MKD30040, MKD80037, MKD30009_0, MKD30015, MKD81006,
+from website.krx.market.core import (MKD20009, MKD30040, MKD80037, MKD30009_0, MKD30015, MKD81006,
                                            MKD30009_1, MKD20011, MKD20011_SUB, MKD81004, MKD30017,
                                            MKD20011_PDF, SRT02010100, MKD80002, MKD30030,
                                            SRT02020100, SRT02020300, MDK80033_0, MDK80033_1,
                                            SRT02020400, SRT02030100, SRT02030400
                                            )
+from website.krx.market.section import *
 import numpy as np
 import pandas as pd
 import datetime
@@ -13,6 +14,30 @@ import datetime
 
 ################################################################################
 # Market
+
+
+def get_section_cap_by_date(date, market="ALL"):
+    market = {"ALL": "ALL", "KOSPI": "STK", "KOSDAQ": "KSQ"}.get(market)
+    if(market == None):
+        print("Invalid market")
+        return -1
+    total_data = pd.DataFrame(columns=["종목코드","종목명","시가총액","등락률","상위섹션","하위섹션","현재가"])
+    for sec_name, sec_code in section_name_code_dict.items():
+        detail_dict = section_name_detail_dict[sec_name]
+        for detail_name, detail_code in detail_dict.items():
+            code = sec_code+detail_code
+            detail_data = MKD20009().fetch(date, market, code)[['isu_cd','isu_abbr','list_mktcap','fluc_rt','prsnt_prc']]
+            detail_data.columns=["종목코드","종목명","시가총액","등락률","현재가"]
+            detail_data["상위섹션"] = sec_name
+            detail_data["하위섹션"] = detail_name
+            total_data = total_data.append(detail_data)
+            print(detail_name)
+        print(sec_name)
+    return total_data
+            
+    
+
+
 @dataframe_empty_handler
 def get_market_ohlcv_by_date(fromdate, todate, ticker):
     """일자별 OHLCV
