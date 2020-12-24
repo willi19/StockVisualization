@@ -5,13 +5,30 @@ from pandas import DataFrame
 
 ################################################################################
 # Market
-class MKD30030(KrxFileIo):
+class MKD20005(KrxFileIo):
     @property
     def bld(self):
         return "MKD/03/0303/03030103/mkd03030103"
 
-    def fetch(self, date, market, market_detail, stock_type):
-        result = self.post(indx_ind_cd=market, schdate=date, secugrp=market_detail, stock_gubun=stock_type)
+    def fetch(self, date, market):
+        """202005 산업별 현황
+        :param date: 조회 일자 (YYMMDD)
+        
+        :param market: 조회 시장
+            ' ' - 전체
+            1001 - 코스피
+            2001 - 코스피
+            N001 - 코넥스
+            
+        :return: 일자별 시세 조회 결과 DataFrame
+                시장구분      종목코드      현재가   대비  등락률(%)   매도호가   매수호가  거래량(주)     거래대금(원)   시가       고가     저가  액면가 통화구분 상장주식수(주)   상장시가총액(원)
+            0     030720           3S    2,365      -5    0.21        2,365      2,360    152,157     361,210,535    2,370    2,395    2,355    500  원(KRW)   44,772,143    105,886,118,195
+            1     007160    AJ네트웍스    5,400      70    1.31       5,400      5,380     90,129     485,098,680    5,330    5,470    5,260  1,000  원(KRW)   46,822,295    252,840,393,000
+            2     006040     AJ렌터카   12,000     400    3.45       12,050     12,000    219,282   2,611,434,750   11,600   12,000   11,550    500  원(KRW)   22,146,300    265,755,600,000
+            3     00     AK홀딩스   55,000     800    1.48       55,200     55,000     16,541     901,619,600   54,700   55,300   53,600  5,000  원(KRW)   13,247,561    728,615,855,000
+            4     054620    APS홀딩스    4,475      10    0.22       4,475      4,460     31,950     142,780,675    4,440    4,520    4,440    500  원(KRW)   20,394,221     91,264,138,975
+        """
+        result = self.post(indx_ind_cd=market, schdate=date)
         return pd.read_excel(result, dtype=str)
 
 
