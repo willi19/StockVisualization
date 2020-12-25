@@ -40,7 +40,8 @@ fig = px.treemap(df_merge, path=['상위섹션','new_하위섹션','new_종목�
 fig.update_traces(textposition="middle center",
                   textfont_color = "rgb(256,256,256)",
                   textinfo="label", 
-                  marker_line_width= 0,
+                  marker_line_width= 1,
+                  marker_line_color = "rgb(0,0,0)",
                   hoverlabel_bgcolor="rgb(256,256,0)",
                   selector=dict(type='treemap'))
 fig.show()

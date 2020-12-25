@@ -34,6 +34,7 @@ def get_section_cap_by_date(date, market="ALL"):
     total_data = total_data.replace(',', '', regex=True)
     total_data = total_data.astype({'종목코드': str, '종목명': str, '시가총액': np.int64, '등락률': np.float16,'현재가':np.int32, 
                     '상위섹션':str, '하위섹션':str})
+    total_data['등락률'] = -total_data['등락률']
     return total_data
             
     
